@@ -39,6 +39,5 @@ ipch/
 *tlog
 Debug/*
 *.filters
-*.vcxproj
 *.vcxproj.user
 Release/*.res
