@@ -7,6 +7,10 @@
 
 #pragma comment(lib,"comctl32.lib")
 
+
+#define TIMER_ID_DISPLAY_REQUIRE_SET	100
+#define TIMER_ID_CHECK_TIME				200
+
 class C_DLG :public CMDialog
 {
 
@@ -27,7 +31,7 @@ BOOL C_DLG::ChangeControlStatus()
 {
 	if (this->IsCheckedItem(IDC_CHECK_ENABLE))
 	{
-		::SetTimer(this->mHwnd, 100, 1000 * 30, NULL);
+		::SetTimer(this->mHwnd, TIMER_ID_DISPLAY_REQUIRE_SET, 1000 * 30, NULL);
 		this->SetWindowText(L"Don't Sleep Timer (Enable)");
 	}
 	else{
@@ -37,7 +41,7 @@ BOOL C_DLG::ChangeControlStatus()
 	return TRUE;
 }
 //---------------------------------------------------------------------
-// ダイアログプロージャ関数
+// Main Dialog
 //---------------------------------------------------------------------
 LRESULT CALLBACK
 C_DLG::DlgProc(HWND hwnd, UINT uMsg, WPARAM wP, LPARAM lP){
@@ -46,7 +50,7 @@ C_DLG::DlgProc(HWND hwnd, UINT uMsg, WPARAM wP, LPARAM lP){
 	case WM_INITDIALOG:
 
 	{
-		::SetTimer(mHwnd, 200, 500, NULL);
+		::SetTimer(mHwnd, TIMER_ID_CHECK_TIME, 500, NULL);
 		::InitCommonControls();
 		this->SetDlgItemInt(IDC_EDIT_H, 20, FALSE);
 		this->SetDlgItemInt(IDC_EDIT_M, 0, FALSE);
@@ -110,7 +114,7 @@ C_DLG::DlgProc(HWND hwnd, UINT uMsg, WPARAM wP, LPARAM lP){
 	}
 	case WM_TIMER:
 	{
-		if (wP == 100){
+		if (wP == TIMER_ID_DISPLAY_REQUIRE_SET){
 			::SetThreadExecutionState(ES_DISPLAY_REQUIRED);
 			INPUT input[1];
 			::ZeroMemory(input, sizeof(INPUT));
@@ -120,7 +124,7 @@ C_DLG::DlgProc(HWND hwnd, UINT uMsg, WPARAM wP, LPARAM lP){
 			input[0].mi.dy = 0;
 			::SendInput(1, input, sizeof(INPUT));
 		}
-		else if (wP == 200){
+		else if (wP == TIMER_ID_CHECK_TIME){
 			if (this->IsCheckedItem(IDC_CHECK_TIMER))
 			{
 
@@ -155,7 +159,6 @@ C_DLG::DlgProc(HWND hwnd, UINT uMsg, WPARAM wP, LPARAM lP){
 			break;
 		case IDCANCEL:
 
-			/*ダイアログの終了*/
 			::EndDialog(hwnd, 0);
 			break;
 		}
